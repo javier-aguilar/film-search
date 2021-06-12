@@ -1,5 +1,7 @@
 class FilmController < ApplicationController
   def search
-    render json: { data: 'lorem ipsum' }, status: 200
+    data = Film.search(params[:query])
+
+    render json: { data: data }, status: 200
   end
 end

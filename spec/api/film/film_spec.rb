@@ -11,6 +11,7 @@ RSpec.describe 'Films', type: :request do
 
       result = Search.last
       expect(result[:count]).to eq 1
+      expect(result[:query]).to eq 'alien'
 
       expect(data).to be_an Array
       expect(data).not_to be_empty
@@ -31,6 +32,7 @@ RSpec.describe 'Films', type: :request do
       data = json[:data]
 
       result = Search.last
+      expect(result[:query]).to eq 'alien'
       expect(result[:count]).to eq 2
 
       expect(data).to be_an Array

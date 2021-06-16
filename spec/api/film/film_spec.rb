@@ -20,6 +20,19 @@ RSpec.describe 'Films', type: :request do
       expect(response).to have_http_status(200)
     end
   end
+  describe 'GET film/search?query=' do
+    before { get '/film/search?query=' }
+
+    it 'returns error' do
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(json[:message]).to eq 'Query required'
+    end
+
+    it 'returns status code 400' do
+      expect(response).to have_http_status(400)
+    end
+  end
   describe 'GET film/search?' do
     before { get '/film/search?' }
 

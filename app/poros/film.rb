@@ -9,11 +9,26 @@ class Film
   end
 
   def self.search(query)
-    search_results = MoviedbService.new.search_film(query)
-    films = search_results[:results].map do |film|
-      info = { id: film[:id], title: film[:title], year: film[:release_date], summary: film[:overview] }
-      Film.new(info)
+    result = Search.where(query: query).first
+    if result.present?
+      Search.increment_counter(:count, result.id)
+      return result.result
     end
+
+    search_results = MoviedbService.new.search_film(query)
+    return search_results[:errors] if search_results[:errors]
+
+    films = filter_results(search_results)
+    Search.create(query: query, count: 1, result: films)
     films
+  end
+
+  private 
+
+  def self.filter_results(search_results)
+    search_results[:results].map do |film|
+      film_info = { id: film[:id], title: film[:title], year: film[:release_date], summary: film[:overview] }
+      Film.new(film_info)
+    end
   end
 end

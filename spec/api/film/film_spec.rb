@@ -9,6 +9,9 @@ RSpec.describe 'Films', type: :request do
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
 
+      result = Search.last
+      expect(result[:count]).to eq 1
+
       expect(data).to be_an Array
       expect(data).not_to be_empty
       expect(data[0]).to have_key :id
@@ -18,6 +21,23 @@ RSpec.describe 'Films', type: :request do
 
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
+    end
+
+    it 'returns film(s) from db' do
+      get '/film/search?query=alien'
+
+      expect(response).to be_successful
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json[:data]
+
+      result = Search.last
+      expect(result[:count]).to eq 2
+
+      expect(data).to be_an Array
+      expect(data).not_to be_empty
+      expect(data[0]).to have_key :id
+      expect(data[0]).to have_key :title
+      expect(data[0]).to have_key :year
     end
   end
   describe 'GET film/search?query=' do

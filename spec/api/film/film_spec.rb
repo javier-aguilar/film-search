@@ -152,4 +152,40 @@ RSpec.describe 'Films', type: :request do
       expect(response).to have_http_status(400)
     end
   end
+
+  describe 'GET film/search?query=alienalien&filter=ben' do
+    before { get '/film/search?query=alien&filter=ben' }
+
+    it 'returns a match' do
+      expect(response).to be_successful
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json[:data]
+
+      result = Search.last
+      expect(result[:count]).to eq 1
+      expect(result[:query]).to eq 'alien'
+
+      expect(data).to be_an Array
+      expect(data).not_to be_empty
+      expect(data.first[:title]).to eq 'Ben 10 Alien Swarm'
+    end
+  end
+
+  describe 'GET film/search?query=alienalien&filter=ben' do
+    before { get '/film/search?query=alien&filter=predator' }
+
+    it 'returns matches' do
+      expect(response).to be_successful
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json[:data]
+
+      result = Search.last
+      expect(result[:count]).to eq 1
+      expect(result[:query]).to eq 'alien'
+
+      expect(data).to be_an Array
+      expect(data).not_to be_empty
+      expect(data.size).to eq 2
+    end
+  end
 end

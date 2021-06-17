@@ -18,12 +18,11 @@ class Film
     search_results = MoviedbService.new.search_film(query)
     return search_results[:errors] if search_results[:errors]
 
-    films = filter_results(search_results)
-    Search.create(query: query, count: 1, result: films)
-    films
+    films = Search.create(query: query, count: 1, result: filter_results(search_results))
+    films[:result]
   end
 
-  private 
+  private
 
   def self.filter_results(search_results)
     search_results[:results].map do |film|
@@ -31,4 +30,5 @@ class Film
       Film.new(film_info)
     end
   end
+ 
 end

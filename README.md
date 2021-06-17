@@ -1,24 +1,57 @@
-# README
+# Film Search API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Film Search is an API built on Rails that provides data on films.
 
-Things you may want to cover:
+## Test Deployment
 
-* Ruby version
+The API can be reached here: https://film-search-api.herokuapp.com/
 
-* System dependencies
+## Setup
 
-* Configuration
+### Versions
 
-* Database creation
+- Ruby 2.6.7
+- Rails 5.2.6
 
-* Database initialization
+### Install
 
-* How to run the test suite
+```shell
+$ git clone https://github.com/javier-aguilar/film-search.git
+$ cd film-search
+$ bundle install
+$ rails db:{create,migrate}
+$ export api_key=<Your_MovieDB_API_Key>
+$ rails s
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## API Documentation
 
-* Deployment instructions
+See: https://film-search-api.herokuapp.com/api-docs
 
-* ...
+### Search for film
+
+Returns film info
+
+```shell
+GET /film/search/query=<keyword>
+```
+
+Example:
+
+```shell
+GET /film/search/query=alien
+```
+
+#### Required Params
+
+|           |         |
+| --------- | :-----: |
+| **query** | keyword |
+
+#### Optional Params
+
+|             |                   |
+| ----------- | :---------------: |
+| **sort_by** | 'title' OR 'year' |
+| **order**   |  'asc' OR 'desc'  |
+| **filter**  |      keyword      |

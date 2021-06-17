@@ -1,0 +1,62 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/film/search":
+    get:
+      summary: Retrieves a list of film(s) based on query
+      tags:
+      - Search
+      parameters:
+      - name: query
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: sort_by
+        in: query
+        schema:
+          type: string
+          enum:
+          - title
+          - year
+        required: false
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+      - name: filter
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Film(s) found matching query
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type: array
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      year:
+                        type: string
+                      summary:
+                        type: string
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: film-search-api.herokuapp.com/

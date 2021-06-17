@@ -1,4 +1,20 @@
-language: ruby
-rvm:
+langauge: ruby
+rbenv:
   - 2.6.7
-  - jruby
+addons:
+  postgresql: 9.6
+  chrome: stable
+dist: xenial
+before_install:
+  - yes | gem update --system --force
+  - gem install bundler
+script:
+  - yarn
+  - bundle exec rails db:{create,migrate} RAILS_ENV=test
+  - bundle exec rspec
+deploy:
+  provider: heroku
+  api_key:
+    secure: eJvJJe75pehMkrjti01lJf1283hymzihXe8uEeBXHvXwX3AolFQafuL+H6IPcWYQGkt+pvR/7auAkq/eRJZJHneVlxAHPG/7sXTlUcPVxPH+tLIrBXhoNdz40TThX3FptKdtOKu0q0pAwWSHWbC0fj0OnaZzbv/jikbrRvf55WF6LabFsDDo0H/SqmN+3rHwtpNyds4M35pDtVN29awmqBGf4FHNIoC7XyDcBAGB35eIe32Qhk6Ypb1xjsPAnhh9UgGzK1r5C8zlm+gF2kvAFaqo2iVoC98BwYmweFp7hmlKsgYSb+iRZhQJpkgtPTd0XIXSFqB8fIldSgOq6FqH622B3/L/f9Atd6Qp+GZjTpMCIZj3os3yOcQ50cmT79FunmZgGaSwYmP6SqhjxQk7ZTYk1eASLPSLwsnOxK5AdunJDGCTi6UJfdT3G9tn3FqlCht8NkrOxmBWxmOjCabuNUt2pfwQXtcHZFIH9fzQGAgX4fFg72UJPw6Oz/iNsZQCvRNx5HSbr4qBNiWbOJCmDth6oOcUfEQrw0DpjqBXJehFqsVzdurP7X/ezMHj4nxVNLtKzwW0E8EZ/+hnQcKHoNMZkqkJ31uwfSG+Sv9DmI14BPoITYy9ItjL1a7b7J9RhK6ZNjyTb3V6raFeVGRdl/jtq/45DLPkANCg0Fd4IR0=
+  app: film-search-api
+  run: rails db:migrate

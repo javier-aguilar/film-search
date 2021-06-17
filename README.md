@@ -26,6 +26,8 @@ $ rails s
 
 ## API Documentation
 
+See: https://film-search-api.herokuapp.com/api-docs
+
 ### Search for film
 
 Returns film info
@@ -45,3 +47,11 @@ GET /film/search/query=alien
 |           |         |
 | --------- | :-----: |
 | **query** | keyword |
+
+#### Optional Params
+
+|             |                   |
+| ----------- | :---------------: |
+| **sort_by** | 'title' OR 'year' |
+| **order**   |  'asc' OR 'desc'  |
+| **filter**  |      keyword      |

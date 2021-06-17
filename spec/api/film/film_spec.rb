@@ -84,4 +84,72 @@ RSpec.describe 'Films', type: :request do
       expect(response).to have_http_status(400)
     end
   end
+  describe 'GET film/search?query=alienalien&sort_by=title' do
+    before { get '/film/search?query=alien&sort_by=title' }
+
+    it 'returns film(s) ordered by title (default asc)' do
+      expect(response).to be_successful
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json[:data]
+
+      result = Search.last
+      expect(result[:count]).to eq 1
+      expect(result[:query]).to eq 'alien'
+
+      expect(data).to be_an Array
+      expect(data).not_to be_empty
+      expect(data.first[:title]).to eq 'Alien'
+      expect(data.last[:title]).to eq 'Ben 10 Alien Swarm'
+    end
+  end
+  describe 'GET film/search?query=alienalien&sort_by=title&order=asc' do
+    before { get '/film/search?query=alien&sort_by=title&order=asc' }
+
+    it 'returns film(s) ordered by title asc' do
+      expect(response).to be_successful
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json[:data]
+
+      result = Search.last
+      expect(result[:count]).to eq 1
+      expect(result[:query]).to eq 'alien'
+
+      expect(data).to be_an Array
+      expect(data).not_to be_empty
+      expect(data.first[:title]).to eq 'Alien'
+      expect(data.last[:title]).to eq 'Ben 10 Alien Swarm'
+    end
+  end
+  describe 'GET film/search?query=alienalien&sort_by=title&order=desc' do
+    before { get '/film/search?query=alien&sort_by=title&order=desc' }
+
+    it 'returns film(s) ordered by title desc' do
+      expect(response).to be_successful
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json[:data]
+
+      result = Search.last
+      expect(result[:count]).to eq 1
+      expect(result[:query]).to eq 'alien'
+
+      expect(data).to be_an Array
+      expect(data).not_to be_empty
+      expect(data.first[:title]).to eq 'Ben 10 Alien Swarm'
+      expect(data.last[:title]).to eq 'Alien'
+    end
+  end
+
+  describe 'GET film/search?query=&sort_by=title&order=asc' do
+    before { get '/film/search?query=&sort_by=title&order=asc' }
+
+    it 'returns error' do
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(json[:message]).to eq 'Query required'
+    end
+
+    it 'returns status code 400' do
+      expect(response).to have_http_status(400)
+    end
+  end
 end

@@ -4,7 +4,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alien' do
     before { get '/film/search?query=alien' }
 
-    it 'returns film(s)' do
+    it 'returns film(s)', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -24,7 +24,7 @@ RSpec.describe 'Films', type: :request do
       expect(response).to have_http_status(200)
     end
 
-    it 'returns film(s) from db' do
+    it 'returns film(s) from db', :vcr do
       get '/film/search?query=alien'
 
       expect(response).to be_successful
@@ -58,6 +58,47 @@ RSpec.describe 'Films', type: :request do
       expect(data_2[0]).to have_key :year
     end
   end
+  describe 'GET film/search?query=blade+runner' do
+    before { get '/film/search?query=blade+runner' }
+
+    it 'returns film(s)', :vcr do
+      expect(response).to be_successful
+      json_1 = JSON.parse(response.body, symbolize_names: true)
+      data_1 = json_1[:data]
+
+      result_1 = Search.last
+      expect(result_1[:count]).to eq 1
+      expect(result_1[:query]).to eq 'blade runner'
+
+      expect(data_1).to be_an Array
+      expect(data_1).not_to be_empty
+      expect(data_1[0]).to have_key :id
+      expect(data_1[0]).to have_key :title
+      expect(data_1[0]).to have_key :year
+      expect(data_1[0][:title]).to include('Blade Runner')
+
+      get '/film/search?query=blade%20Runner'
+
+      expect(response).to be_successful
+      json_2 = JSON.parse(response.body, symbolize_names: true)
+      data_2 = json_2[:data]
+
+      result_2 = Search.last
+      expect(result_2[:query]).to eq 'blade runner'
+      expect(result_2[:count]).to eq 2
+
+      expect(data_2).to be_an Array
+      expect(data_2).not_to be_empty
+      expect(data_2[0]).to have_key :id
+      expect(data_2[0]).to have_key :title
+      expect(data_2[0]).to have_key :year
+      expect(data_2[0][:title]).to include('Blade Runner')
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
   describe 'GET film/search?query=' do
     before { get '/film/search?query=' }
 
@@ -87,7 +128,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&sort_by=title' do
     before { get '/film/search?query=alien&sort_by=title' }
 
-    it 'returns film(s) ordered by title (default asc)' do
+    it 'returns film(s) ordered by title (default asc)', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -105,7 +146,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&sort_by=title&order=asc' do
     before { get '/film/search?query=alien&sort_by=title&order=asc' }
 
-    it 'returns film(s) ordered by title asc' do
+    it 'returns film(s) ordered by title asc', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -123,7 +164,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&sort_by=title&order=desc' do
     before { get '/film/search?query=alien&sort_by=title&order=desc' }
 
-    it 'returns film(s) ordered by title desc' do
+    it 'returns film(s) ordered by title desc', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -156,7 +197,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&filter=ben' do
     before { get '/film/search?query=alien&filter=ben' }
 
-    it 'returns a match' do
+    it 'returns a match', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -174,7 +215,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&filter=ben' do
     before { get '/film/search?query=alien&filter=predator' }
 
-    it 'returns matches' do
+    it 'returns matches', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -186,6 +227,20 @@ RSpec.describe 'Films', type: :request do
       expect(data).to be_an Array
       expect(data).not_to be_empty
       expect(data.size).to eq 2
+    end
+  end
+
+  describe 'GET film/search?query=&filter=predator' do
+    before { get '/film/search?query=&filter=predator' }
+
+    it 'returns error' do
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(json[:message]).to eq 'Query required'
+    end
+
+    it 'returns status code 400' do
+      expect(response).to have_http_status(400)
     end
   end
 end

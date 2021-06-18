@@ -26,6 +26,11 @@ RSpec.describe 'Film API', type: :request do
         let(:query) { 'aa' }
         run_test!
       end
+
+      response '400', 'Query required' do
+        let(:query) { '' }
+        run_test!
+      end
     end
   end
 end

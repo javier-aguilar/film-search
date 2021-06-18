@@ -55,6 +55,8 @@ paths:
                         type: string
                       summary:
                         type: string
+        '400':
+          description: Query required
 servers:
 - url: https://{defaultHost}
   variables:

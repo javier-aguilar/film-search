@@ -4,7 +4,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alien' do
     before { get '/film/search?query=alien' }
 
-    it 'returns film(s)' do
+    it 'returns film(s)', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -24,7 +24,7 @@ RSpec.describe 'Films', type: :request do
       expect(response).to have_http_status(200)
     end
 
-    it 'returns film(s) from db' do
+    it 'returns film(s) from db', :vcr do
       get '/film/search?query=alien'
 
       expect(response).to be_successful
@@ -61,7 +61,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=blade+runner' do
     before { get '/film/search?query=blade+runner' }
 
-    it 'returns film(s)' do
+    it 'returns film(s)', :vcr do
       expect(response).to be_successful
       json_1 = JSON.parse(response.body, symbolize_names: true)
       data_1 = json_1[:data]
@@ -128,7 +128,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&sort_by=title' do
     before { get '/film/search?query=alien&sort_by=title' }
 
-    it 'returns film(s) ordered by title (default asc)' do
+    it 'returns film(s) ordered by title (default asc)', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -146,7 +146,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&sort_by=title&order=asc' do
     before { get '/film/search?query=alien&sort_by=title&order=asc' }
 
-    it 'returns film(s) ordered by title asc' do
+    it 'returns film(s) ordered by title asc', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -164,7 +164,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&sort_by=title&order=desc' do
     before { get '/film/search?query=alien&sort_by=title&order=desc' }
 
-    it 'returns film(s) ordered by title desc' do
+    it 'returns film(s) ordered by title desc', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -197,7 +197,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&filter=ben' do
     before { get '/film/search?query=alien&filter=ben' }
 
-    it 'returns a match' do
+    it 'returns a match', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
@@ -215,7 +215,7 @@ RSpec.describe 'Films', type: :request do
   describe 'GET film/search?query=alienalien&filter=ben' do
     before { get '/film/search?query=alien&filter=predator' }
 
-    it 'returns matches' do
+    it 'returns matches', :vcr do
       expect(response).to be_successful
       json = JSON.parse(response.body, symbolize_names: true)
       data = json[:data]
